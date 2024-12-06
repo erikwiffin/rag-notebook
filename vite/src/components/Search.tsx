@@ -1,13 +1,16 @@
 import { useQuery } from "@apollo/client";
 import { gql } from "../__generated__/gql";
 import { Document } from "../__generated__/graphql";
-import { ChangeEventHandler, useState } from "react";
+import { useState } from "react";
 
 const SEARCH = gql(`
   query SEARCH($text: String!) {
     search(text: $text) {
-      id
-      text
+      answer
+      documents {
+        id
+        text
+      }
     }
   }
   `);
@@ -48,10 +51,12 @@ const SearchResults = ({
   loading,
   error,
   results,
+  answer,
 }: {
   loading: boolean;
   error: any;
   results: Document[] | undefined;
+  answer: string | undefined;
 }) => {
   if (loading) {
     return <span className="loading loading-spinner loading-md"></span>;
@@ -62,6 +67,7 @@ const SearchResults = ({
 
   return (
     <div>
+      <div>{answer}</div>
       {results?.map((result) => (
         <SearchResult key={result.id} result={result} />
       ))}
@@ -77,7 +83,7 @@ const SearchResult = ({ result }: { result: Document }) => (
 );
 
 export const Search = () => {
-  const [text, setText] = useState("");
+  const [text, setText] = useState("What is Luna?");
   const { loading, error, data } = useQuery(SEARCH, {
     variables: { text },
   });
@@ -85,7 +91,12 @@ export const Search = () => {
   return (
     <div>
       <SearchInput text={text} setText={setText} />
-      <SearchResults loading={loading} error={error} results={data?.search} />
+      <SearchResults
+        loading={loading}
+        error={error}
+        results={data?.search?.documents}
+        answer={data?.search?.answer}
+      />
     </div>
   );
 };

@@ -9,10 +9,12 @@ from ariadne import (
 )
 from ariadne.explorer import ExplorerGraphiQL
 from flask import Blueprint, jsonify, request
+from openai import OpenAI
+from sentence_transformers import SentenceTransformer
 
 from server.application import app
 from server.extensions import db
-from server.models.document import Document
+from server.models.document import Chunk, Document
 
 BP = Blueprint("graphql", __name__)
 
@@ -22,11 +24,51 @@ gql_mutation = MutationType()
 
 @gql_query.field("search")
 def resolve_search(*_, text):
-    query = db.select(Document).filter(Document.text.ilike(f"%{text}%"))
 
-    documents = db.session.execute(query).scalars()
+    model = SentenceTransformer("all-MiniLM-L6-v2")
+    embeddings = model.encode([text])
+    vectors = embeddings[0]
 
-    return [document.to_json() for document in documents]
+    query = db.select(Chunk).order_by(Chunk.vectors.l2_distance(vectors)).limit(5)
+
+    chunks = list(db.session.execute(query).scalars())
+    client = OpenAI()
+
+    context = """
+The following are a series of documents with important information. Say "understood" if you understand.
+---
+"""
+    for chunk in chunks:
+        context += f"\n{chunk.text}"
+
+    completion = client.chat.completions.create(
+        messages=[
+            {"role": "user", "content": context},
+            {"role": "assistant", "content": "understood"},
+            {
+                "role": "user",
+                "content": f"Answer the following question using only information in the provided documents: {text}",
+            },
+        ],
+        model="mistral-nemo-instruct-2407@4bit",
+        temperature=0.3,
+        max_tokens=-1,
+        stream=False,
+    )
+
+    answer = completion.choices[0].message.content
+
+    print(
+        {
+            "answer": answer,
+            "documents": [chunk.to_json() for chunk in chunks],
+        }
+    )
+
+    return {
+        "answer": answer,
+        "documents": [chunk.to_json() for chunk in chunks],
+    }
 
 
 type_defs = load_schema_from_path(Path(BP.root_path) / "schema.graphql")

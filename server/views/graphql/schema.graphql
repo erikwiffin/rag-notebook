@@ -1,11 +1,15 @@
 type Query {
-  search(text: String!): [Document!]!
+  search(text: String!): SearchResult
 }
 
 type Mutation {
   say_hello(name: String!): String!
 }
 
+type SearchResult {
+  answer: String!
+  documents: [Document!]!
+}
 type Document {
   id: String!
   text: String!
