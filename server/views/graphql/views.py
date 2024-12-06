@@ -11,11 +11,23 @@ from ariadne.explorer import ExplorerGraphiQL
 from flask import Blueprint, jsonify, request
 
 from server.application import app
+from server.extensions import db
+from server.models.document import Document
 
 BP = Blueprint("graphql", __name__)
 
 gql_query = QueryType()
 gql_mutation = MutationType()
+
+
+@gql_query.field("search")
+def resolve_search(*_, text):
+    query = db.select(Document).filter(Document.text.ilike(f"%{text}%"))
+
+    documents = db.session.execute(query).scalars()
+
+    return [document.to_json() for document in documents]
+
 
 type_defs = load_schema_from_path(Path(BP.root_path) / "schema.graphql")
 schema = make_executable_schema(type_defs, gql_query, gql_mutation)

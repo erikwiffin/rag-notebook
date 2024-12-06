@@ -9,6 +9,7 @@ app.config["SECRET_KEY"] = "secret"
 # SQLAlchemy
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_ECHO"] = True
 
 # Elasticsearch
 # app.config['ELASTICSEARCH_DATABASE_URI'] = os.getenv('ELASTICSEARCH_DATABASE_URI')

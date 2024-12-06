@@ -25,6 +25,7 @@ flask-alembic = "^3.0.1"
 celery = "^5.3.6"
 redis = "^5.0.3"
 ariadne = "^0.23.0"
+pypdf = "^5.1.0"
 
 
 [build-system]
