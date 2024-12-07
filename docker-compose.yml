@@ -41,6 +41,17 @@ services:
       - '11434:11434'
     command: 'llama3.2'
 
+  langfuse:
+    image: langfuse/langfuse:2
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/langfuse
+      NEXTAUTH_URL: http://localhost:3001
+      NEXTAUTH_SECRET: mysecret
+      SALT: mysalt
+      ENCRYPTION_KEY: 35a255a7f8802a08bf00d75d786858cd64a3fa03a670fdc86f08da61992d69ce
+    ports:
+      - '3001:3000'
+
   # celery-worker:
   #   build:
   #     dockerfile: celery-worker.Dockerfile

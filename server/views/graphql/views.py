@@ -9,7 +9,9 @@ from ariadne import (
 )
 from ariadne.explorer import ExplorerGraphiQL
 from flask import Blueprint, jsonify, request
-from openai import OpenAI
+from langfuse import Langfuse
+from langfuse.decorators import langfuse_context, observe
+from langfuse.openai import OpenAI
 from sentence_transformers import SentenceTransformer
 
 from server.application import app
@@ -23,7 +25,9 @@ gql_mutation = MutationType()
 
 
 @gql_query.field("search")
+@observe()
 def resolve_search(*_, text):
+    langfuse_context.update_current_trace(version="1.0", tags=["rag", "answer"])
 
     model = SentenceTransformer("all-MiniLM-L6-v2")
     embeddings = model.encode([text])
@@ -32,38 +36,25 @@ def resolve_search(*_, text):
     query = db.select(Chunk).order_by(Chunk.vectors.l2_distance(vectors)).limit(5)
 
     chunks = list(db.session.execute(query).scalars())
+    langfuse = Langfuse()
+    prompt = langfuse.get_prompt("basic-rag")
+
     client = OpenAI()
 
-    context = """
-The following are a series of documents with important information. Say "understood" if you understand.
----
-"""
+    context = ""
     for chunk in chunks:
         context += f"\n{chunk.text}"
 
+    compiled_prompt = prompt.compile(documents=context, text=text)
+
     completion = client.chat.completions.create(
-        messages=[
-            {"role": "user", "content": context},
-            {"role": "assistant", "content": "understood"},
-            {
-                "role": "user",
-                "content": f"Answer the following question using only information in the provided documents: {text}",
-            },
-        ],
-        model="mistral-nemo-instruct-2407@4bit",
-        temperature=0.3,
-        max_tokens=-1,
+        messages=compiled_prompt,
+        **prompt.config,
         stream=False,
+        langfuse_prompt=prompt,
     )
 
     answer = completion.choices[0].message.content
-
-    print(
-        {
-            "answer": answer,
-            "documents": [chunk.to_json() for chunk in chunks],
-        }
-    )
 
     return {
         "answer": answer,
