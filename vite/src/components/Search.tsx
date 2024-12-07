@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client";
 import { gql } from "../__generated__/gql";
 import { Document } from "../__generated__/graphql";
 import { useState } from "react";
+import { debounce } from "lodash";
 
 const SEARCH = gql(`
   query SEARCH($text: String!) {
@@ -16,7 +17,9 @@ const SEARCH = gql(`
   `);
 
 const SearchInput = ({ text, setText }: { text: string; setText: any }) => {
+  const [value, setValue] = useState(text);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
     setText(event.target.value);
   };
 
@@ -27,7 +30,7 @@ const SearchInput = ({ text, setText }: { text: string; setText: any }) => {
           type="text"
           className="grow"
           placeholder="Search"
-          value={text}
+          value={value}
           onChange={handleChange}
         />
         <svg
@@ -67,7 +70,7 @@ const SearchResults = ({
 
   return (
     <div>
-      <div>{answer}</div>
+      <div className="bg-base-300 rounded-lg p-4 my-4">{answer}</div>
       {results?.map((result) => (
         <SearchResult key={result.id} result={result} />
       ))}
@@ -76,9 +79,9 @@ const SearchResults = ({
 };
 
 const SearchResult = ({ result }: { result: Document }) => (
-  <div>
+  <div className="border-b-base-300 border-b-2 p-2">
     <h4>ID: {result.id}</h4>
-    <div className="truncate">{result.text}</div>
+    <div className="">{result.text}</div>
   </div>
 );
 
@@ -90,7 +93,7 @@ export const Search = () => {
 
   return (
     <div>
-      <SearchInput text={text} setText={setText} />
+      <SearchInput text={text} setText={debounce(setText, 1000)} />
       <SearchResults
         loading={loading}
         error={error}
