@@ -1,7 +1,11 @@
 import os
 
+import openlit
 from celery import Celery, Task
 from flask import Flask
+
+openlit.init()
+evals = openlit.evals.All(collect_metrics=True)
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret"
