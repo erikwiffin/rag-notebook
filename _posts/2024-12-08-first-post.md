@@ -8,7 +8,7 @@ date: 2024-12-08
 
 In this post, I describe the basic scaffolding that all my future work will build on top of. I built a simple question and answer application that uses a library of PDFs as a knowledge source. Along the way, I tried to make as few decisions as possible, relying on defaults or recommended settings in tutorials. It works pretty well! but we can do better.
 
-![Screenshot](Screenshot_2024-12-08_at_10.49.20_AM.png)
+![Screenshot](/rag-playground/assets/Screenshot_2024-12-08_at_10.49.20_AM.png)
 
 ## Follow along at home
 
