@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: default
 title: "First Post"
 date: 2024-12-08
 categories: RAG
