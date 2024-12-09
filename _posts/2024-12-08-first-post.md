@@ -3,6 +3,7 @@ layout: default
 title: "A basic RAG"
 slug: a-basic-rag
 date: 2024-12-08
+render_with_liquid: false
 ---
 # A Basic RAG
 
