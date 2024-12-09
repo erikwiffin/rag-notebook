@@ -1,11 +1,11 @@
 ---
 layout: default
-title: "A basic RAG"
-slug: a-basic-rag
+title: "A basic application"
+slug: a-basic-application
 date: 2024-12-08
 render_with_liquid: false
 ---
-# A Basic RAG
+# A Basic Application
 
 In this post, I describe the basic scaffolding that all my future work will build on top of. I built a simple question and answer application that uses a library of PDFs as a knowledge source. Along the way, I tried to make as few decisions as possible, relying on defaults or recommended settings in tutorials. It works pretty well! but we can do better.
 
