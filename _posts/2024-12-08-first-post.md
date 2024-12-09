@@ -3,7 +3,6 @@ layout: default
 title: "A basic application"
 slug: a-basic-application
 date: 2024-12-08
-render_with_liquid: false
 ---
 # A Basic Application
 
@@ -63,6 +62,7 @@ Once I had my chunks, I used a python library called [SentenceTransformers](http
 
 The prompt I used was the following:
 
+{% raw %}
 ```
 SYSTEM: You are a helpful AI assistant. Answer the user queries.
 USER: The following are a series of documents with important information. Say "understood" if you understand.
@@ -73,6 +73,7 @@ USER: Answer the following question using only information in the provided docum
 ```
 
 `{{documents}}` gets replaced with my search results (I chose to limit them to 5 results) and `{{text}}` gets replaced with the user's query.
+{% endraw %}
 
 For observability, I'm using a tool called [Langfuse](https://langfuse.com/). It can track your generation requests, the prompt, parameters, and settings used in that request, and save everything as a dataset for future evaluation attemps.
 
