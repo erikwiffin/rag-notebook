@@ -8,7 +8,7 @@ date: 2024-12-08
 
 In this post, I describe the basic scaffolding that all my future work will build on top of. I built a simple question and answer application that uses a library of PDFs as a knowledge source. Along the way, I tried to make as few decisions as possible, relying on defaults or recommended settings in tutorials. It works pretty well! but we can do better.
 
-![Screenshot]({{ site.url }}/assets/screenshot-what-is-a-rag.png)
+![Screenshot]({{ '/assets/screenshot-what-is-a-rag.png' | relative_url }})
 
 ## Follow along at home
 
@@ -77,11 +77,11 @@ USER: Answer the following question using only information in the provided docum
 
 For observability, I'm using a tool called [Langfuse](https://langfuse.com/). It can track your generation requests, the prompt, parameters, and settings used in that request, and save everything as a dataset for future evaluation attemps.
 
-![Langfuse dashboard]({{ site.url }}/assets/screenshot-langfuse-dashboard.png)
+![Langfuse dashboard]({{ '/assets/screenshot-langfuse-dashboard.png' | relative_url }})
 
 Conveniently, Langfuse also acts as a "prompt manager". This is not strictly required for building with an LLM, but it's extremely convenient and you'll find yourself wanting one soon enough.
 
-![Langfuse dashboard]({{ site.url }}/assets/screenshot-langfuse-prompt-manager.png)
+![Langfuse dashboard]({{ '/assets/screenshot-langfuse-prompt-manager.png' | relative_url }})
 
 As you can see in this screenshot, the model I'm using for my LLM is [mistral-nemo-instruct-2407@4bit](https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407) an open-source model from Mistral AI that I can run locally. It's been [quantized](https://www.infoworld.com/article/2336947/what-is-model-quantization-smaller-faster-llms.html) to 4 bits so it can run faster.
 
