@@ -80,7 +80,7 @@ For observability, I'm using a tool called [Langfuse](https://langfuse.com/). It
 
 Conveniently, Langfuse also acts as a "prompt manager". This is not strictly required for building with an LLM, but it's extremely convenient and you'll find yourself wanting one soon enough.
 
-![Langfuse dashboard](/rag-playground/assets/screenshot-langfuse-dashboard.png)
+![Langfuse dashboard](/rag-playground/assets/screenshot-langfuse-prompt-manager.png)
 
 As you can see in this screenshot, the model I'm using for my LLM is [mistral-nemo-instruct-2407@4bit](https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407) an open-source model from Mistral AI that I can run locally. It's been [quantized](https://www.infoworld.com/article/2336947/what-is-model-quantization-smaller-faster-llms.html) to 4 bits so it can run faster.
 
